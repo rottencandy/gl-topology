@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { NamespaceBar, useActiveNamespace } from '@openshift-console/dynamic-plugin-sdk';
+import { GLCanvas } from './GLCanvas';
 
 const TopologyPage: React.FC = () => {
     const [ns] = useActiveNamespace();
@@ -8,7 +9,7 @@ const TopologyPage: React.FC = () => {
     return (
         <>
             <NamespaceBar />
-            <div>hello wurld</div>
+            <GLCanvas />
         </>
     );
 };
