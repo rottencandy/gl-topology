@@ -10,29 +10,22 @@
   {
     "type": "console.page/route",
     "properties": {
-      "exact": true,
-      "path": ["/dynamic-route-1"],
+      "exact": false,
+      "path": ["/topology-gl/all-namespaces", "/topology-gl/ns/:ns"],
       "component": {
-        "$codeRef": "exampleNavs.DynamicPage1"
+        "$codeRef": "topologyPage.default"
       }
     }
   },
   {
     "type": "console.navigation/href",
     "properties": {
-      "id": "dev-dynamic-route-1",
+      "id": "topology-gl",
       "perspective": "dev",
-      "name": "%plugin__console-demo-plugin~Dynamic Nav 1%",
-      "href": "/dynamic-route-1"
-    }
-  },
-  {
-    "type": "console.tab",
-    "properties": {
-      "contextId": "dev-console-observe",
-      "name": "Demo Logs",
-      "href": "/demo-logs",
-      "component": { "$codeRef": "exampleNavs.DynamicPage1" }
+      "name": "Topology GL",
+      "href": "/topology-gl",
+      "section": "top",
+      "namespaced": true
     }
   }
 ]
