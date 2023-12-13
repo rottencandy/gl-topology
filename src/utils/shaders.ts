@@ -1,13 +1,17 @@
 export const VERTEX = `#version 300 es
     precision lowp float;
     layout(location=0)in vec2 aPos;
+    uniform mat4 uCam;
+    uniform vec2 uPos;
+    uniform vec2 uView;
     out vec2 vFragCoord;
 
+    const float SIZE = 10.;
+
     void main() {
-        // -1 -> 1
-        vec2 vwPos = aPos;
-        gl_Position = vec4(vwPos, 0., 1.);
-        vFragCoord = vwPos;
+        vec2 pos = (aPos * SIZE) + uPos + uView;
+        gl_Position = vec4(uCam * vec4(pos, 0., 1.));
+        vFragCoord = aPos;
 }`;
 
 export const FRAGMENT = `#version 300 es

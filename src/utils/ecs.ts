@@ -1,6 +1,6 @@
 import { K8sResourceCommon } from "@openshift-console/dynamic-plugin-sdk";
 import { addComponent, addEntity, createWorld, defineComponent, pipe, resetWorld, Types } from "bitecs";
-import { mat3 } from "gl-matrix";
+import { mat4, vec2 } from "gl-matrix";
 import { cameraSystem, setCamSize } from "../systems/camera";
 import { renderSystem, setupRenderer } from "../systems/render";
 import { timeSystem } from "../systems/time";
@@ -14,7 +14,13 @@ const ecsWorld = createWorld({
     gl: null as WebGL2RenderingContext,
     vao: null as WebGLVertexArrayObject,
     prog: null as WebGLProgram,
-    camMat: mat3.create(),
+    camMat: mat4.create(),
+    viewVec: vec2.create(),
+    uniforms: {
+        cam: null as WebGLUniformLocation,
+        pos: null as WebGLUniformLocation,
+        view: null as WebGLUniformLocation,
+    },
 });
 
 export type World = typeof ecsWorld;
@@ -25,7 +31,6 @@ let req = 0;
 export const startECSPipeline = (gl: WebGL2RenderingContext) => {
     ecsWorld.gl = gl;
     setupRenderer(ecsWorld);
-    alignCam();
     (function loop() {
         pipeline(ecsWorld);
         req = requestAnimationFrame(loop);
@@ -38,8 +43,8 @@ export const StopECSPipeline = () => {
 };
 
 export const alignCam = () => {
-    const { camMat, gl: { canvas: { width, height } } } = ecsWorld;
-    setCamSize(camMat, width, height);
+    const { camMat, gl } = ecsWorld;
+    setCamSize(camMat, gl.canvas.width, gl.canvas.height);
 };
 
 const Vec2 = { x: Types.f32, y: Types.f32 };

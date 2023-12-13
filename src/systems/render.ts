@@ -39,17 +39,26 @@ export const setupRenderer = (world: World) => {
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
         console.error('Program Link failed: ' + gl.getProgramInfoLog(prog));
     }
+    const camLoc = gl.getUniformLocation(prog, 'uCam');
+    const posLoc = gl.getUniformLocation(prog, 'uPos');
+    const viewLoc = gl.getUniformLocation(prog, 'uView');
 
     world.vao = vao;
     world.prog = prog;
+    world.uniforms.cam = camLoc;
+    world.uniforms.pos = posLoc;
+    world.uniforms.view = viewLoc;
 };
 
 export const renderSystem = (world: World) => {
-    const { gl, vao, prog } = world;
+    const { gl, vao, prog, camMat, viewVec, uniforms: { cam, pos, view } } = world;
     gl.clearColor(.1, .1, .1, 1.);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindVertexArray(vao);
     gl.useProgram(prog);
+    gl.uniformMatrix4fv(cam, false, camMat);
+    gl.uniform2f(pos, 0, 0);
+    gl.uniform2fv(view, viewVec);
     gl.drawElements(gl.TRIANGLES, PLANE_ELEMENTS.length, gl.UNSIGNED_SHORT, 0);
 
     return world;
