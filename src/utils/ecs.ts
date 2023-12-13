@@ -51,7 +51,7 @@ const Vec2 = { x: Types.f32, y: Types.f32 };
 const Uid = { uid: Types.ui16 };
 const Position = defineComponent(Vec2);
 const Metadata = defineComponent(Uid);
-const slowOjbects = [];
+const slowOjbects: { name: string, eid: number }[] = [];
 
 export const repackObjects = (res: K8sResourceCommon[]) => {
     resetWorld(ecsWorld);
@@ -66,6 +66,6 @@ export const repackObjects = (res: K8sResourceCommon[]) => {
         Position.x[eid] = 0;
         Position.y[eid] = 0;
         Metadata.uid[eid] = Number(obj.metadata.uid);
-        slowOjbects.push({ name: obj.metadata.name, uid: obj.metadata.uid, eid });
+        slowOjbects.push({ name: obj.metadata.name, eid });
     }
 };
