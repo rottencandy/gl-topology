@@ -11,8 +11,8 @@ export const VERTEX = `#version 300 es
 
     void main() {
         vec2 pos = (aPos * SIZE) + uPos + uView;
-        pos *= uZoom;
         gl_Position = vec4(uCam * vec4(pos, 0., 1.));
+        gl_Position.xy *= uZoom;
         vFragCoord = aPos;
 }`;
 
