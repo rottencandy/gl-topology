@@ -1,6 +1,7 @@
 import { createWorld, pipe, resetWorld } from "bitecs";
 import { renderSystem } from "../systems/renderSystem";
 import { timeSystem } from "../systems/timeSystem";
+import { renderSystem, setupRenderer } from "../systems/render";
 
 const ecsWorld = createWorld({
     time: {
@@ -9,6 +10,8 @@ const ecsWorld = createWorld({
         then: performance.now(),
     },
     gl: null as WebGL2RenderingContext,
+    vao: null as WebGLVertexArrayObject,
+    prog: null as WebGLProgram,
 });
 
 export type World = typeof ecsWorld;
