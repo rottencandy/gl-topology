@@ -7,15 +7,25 @@ export const setCamSize = (mat: mat4, width: number, height: number) => {
 };
 
 const translateVec = vec2.create();
-const DRAG_SPEED = 1.;
 
 export const cameraSystem = (world: World) => {
-    const { viewVec } = world;
+    const { viewVec, zoom } = world;
     if (Pointer.pressed) {
-        vec2.set(translateVec, Pointer.dx * DRAG_SPEED, -Pointer.dy * DRAG_SPEED);
+        const dx = Pointer.dx / zoom;
+        const dy = -Pointer.dy / zoom;
+        vec2.set(translateVec, dx, dy);
         vec2.add(viewVec, viewVec, translateVec);
+
+        Pointer.dx = 0;
+        Pointer.dy = 0;
     }
-    Pointer.dx = 0;
-    Pointer.dy = 0;
+    if (Pointer.scroll) {
+        world.zoom += Pointer.scroll < 0 ?
+            1 :
+            // avoid completely going to zero when zooming out
+            -Math.min(1, zoom / 2);
+
+        Pointer.scroll = 0;
+    }
     return world;
 };

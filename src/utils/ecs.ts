@@ -16,10 +16,12 @@ const ecsWorld = createWorld({
     prog: null as WebGLProgram,
     camMat: mat4.create(),
     viewVec: vec2.create(),
+    zoom: 1,
     uniforms: {
         cam: null as WebGLUniformLocation,
         pos: null as WebGLUniformLocation,
         view: null as WebGLUniformLocation,
+        zoom: null as WebGLUniformLocation,
     },
 });
 

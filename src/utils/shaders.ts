@@ -4,12 +4,14 @@ export const VERTEX = `#version 300 es
     uniform mat4 uCam;
     uniform vec2 uPos;
     uniform vec2 uView;
+    uniform float uZoom;
     out vec2 vFragCoord;
 
     const float SIZE = 10.;
 
     void main() {
         vec2 pos = (aPos * SIZE) + uPos + uView;
+        pos *= uZoom;
         gl_Position = vec4(uCam * vec4(pos, 0., 1.));
         vFragCoord = aPos;
 }`;

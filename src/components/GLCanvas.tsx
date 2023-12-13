@@ -1,6 +1,6 @@
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import * as React from 'react';
-import { onPointerDown, onPointerMove, onPointerUp } from '../utils/pointer';
+import { onPointerDown, onPointerMove, onPointerUp, onWheel } from '../utils/pointer';
 import { alignCam, repackObjects, startECSPipeline, StopECSPipeline } from '../utils/ecs';
 
 import './GLCanvas.scss';
@@ -23,7 +23,7 @@ const prepareCanvas = (canvas: HTMLCanvasElement, gl: WebGL2RenderingContext) =>
     canvas.onpointermove = onPointerMove;
     canvas.onpointerup = onPointerUp;
     canvas.onpointerdown = onPointerDown;
-
+    canvas.onwheel = onWheel;
 };
 
 export const GLCanvas: React.FC<{ res: K8sResourceCommon[] }> = ({ res }) => {

@@ -42,23 +42,28 @@ export const setupRenderer = (world: World) => {
     const camLoc = gl.getUniformLocation(prog, 'uCam');
     const posLoc = gl.getUniformLocation(prog, 'uPos');
     const viewLoc = gl.getUniformLocation(prog, 'uView');
+    const zoomLoc = gl.getUniformLocation(prog, 'uZoom');
+
+    world.zoom = 1;
 
     world.vao = vao;
     world.prog = prog;
     world.uniforms.cam = camLoc;
     world.uniforms.pos = posLoc;
     world.uniforms.view = viewLoc;
+    world.uniforms.zoom = zoomLoc;
 };
 
 export const renderSystem = (world: World) => {
-    const { gl, vao, prog, camMat, viewVec, uniforms: { cam, pos, view } } = world;
+    const { gl, vao, prog, camMat, viewVec, zoom, uniforms } = world;
     gl.clearColor(.1, .1, .1, 1.);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindVertexArray(vao);
     gl.useProgram(prog);
-    gl.uniformMatrix4fv(cam, false, camMat);
-    gl.uniform2f(pos, 0, 0);
-    gl.uniform2fv(view, viewVec);
+    gl.uniformMatrix4fv(uniforms.cam, false, camMat);
+    gl.uniform2f(uniforms.pos, 0, 0);
+    gl.uniform2fv(uniforms.view, viewVec);
+    gl.uniform1f(uniforms.zoom, zoom);
     gl.drawElements(gl.TRIANGLES, PLANE_ELEMENTS.length, gl.UNSIGNED_SHORT, 0);
 
     return world;

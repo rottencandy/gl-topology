@@ -3,6 +3,7 @@ export const Pointer = {
     y: 0,
     dx: 0,
     dy: 0,
+    scroll: 0,
     pressed: false,
 };
 
@@ -19,4 +20,8 @@ export const onPointerUp = () => {
 
 export const onPointerDown = () => {
     Pointer.pressed = true;
+};
+
+export const onWheel = (e: WheelEvent) => {
+    Pointer.scroll = e.deltaY;
 };
