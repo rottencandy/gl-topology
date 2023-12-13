@@ -1,5 +1,7 @@
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import * as React from 'react';
-import { startECSPipeline, StopECSPipeline } from '../utils/ecs';
+import { onPointerDown, onPointerMove, onPointerUp } from '../utils/pointer';
+import { alignCam, repackObjects, startECSPipeline, StopECSPipeline } from '../utils/ecs';
 
 import './GLCanvas.scss';
 
@@ -11,14 +13,14 @@ const prepareCanvas = (canvas: HTMLCanvasElement) => {
             canvas.width = displayWidth;
             canvas.height = displayHeight;
         }
+        alignCam();
     };
 
     canvas.onresize = onDisplayResize;
 
-    //canvas.ondragover = onDragOver;
-    //canvas.onpointermove = onPointerMove;
-    //canvas.onpointerup = onPointerUp;
-    //canvas.onpointerdown = onPointerDown;
+    canvas.onpointermove = onPointerMove;
+    canvas.onpointerup = onPointerUp;
+    canvas.onpointerdown = onPointerDown;
 
 };
 
