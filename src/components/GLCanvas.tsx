@@ -24,7 +24,7 @@ const prepareCanvas = (canvas: HTMLCanvasElement) => {
 
 };
 
-export const GLCanvas: React.FC = () => {
+export const GLCanvas: React.FC<{ res: K8sResourceCommon[] }> = ({ res }) => {
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
     React.useEffect(() => {
@@ -36,6 +36,10 @@ export const GLCanvas: React.FC = () => {
             StopECSPipeline();
         };
     }, []);
+
+    React.useEffect(() => {
+        repackObjects(res);
+    }, [res]);
 
     return (
         <canvas ref={canvasRef} />

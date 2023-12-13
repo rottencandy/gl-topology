@@ -1,15 +1,33 @@
 import * as React from 'react';
-import { NamespaceBar, useActiveNamespace } from '@openshift-console/dynamic-plugin-sdk';
+import { K8sResourceCommon, NamespaceBar, useActiveNamespace, useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
 import { GLCanvas } from './GLCanvas';
+import { Bullseye, Spinner } from '@patternfly/react-core';
 
 const TopologyPage: React.FC = () => {
     const [ns] = useActiveNamespace();
-    console.log('ns: ', ns);
+    const [pods, loaded] = useK8sWatchResource<K8sResourceCommon[]>({
+        groupVersionKind: {
+            version: 'v1',
+            kind: 'Pod',
+        },
+        namespace: ns,
+        isList: true,
+        namespaced: true,
+    });
+
+    if (!loaded) {
+        return (
+            <Bullseye>
+                <Spinner size="xl" aria-label="Loading resources..." />
+            </Bullseye>
+        );
+
+    }
 
     return (
         <>
             <NamespaceBar />
-            <GLCanvas />
+            <GLCanvas res={pods} />
         </>
     );
 };
