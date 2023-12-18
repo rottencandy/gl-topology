@@ -44,7 +44,7 @@ export const setupRenderer = (world: World) => {
     const viewLoc = gl.getUniformLocation(prog, 'uView');
     const zoomLoc = gl.getUniformLocation(prog, 'uZoom');
 
-    world.zoom = 1;
+    world.zoom.reset();
 
     world.vao = vao;
     world.prog = prog;
@@ -55,7 +55,7 @@ export const setupRenderer = (world: World) => {
 };
 
 export const renderSystem = (world: World) => {
-    const { gl, vao, prog, camMat, viewVec, zoom, uniforms } = world;
+    const { time: { delta }, gl, vao, prog, camMat, viewVec, zoom, uniforms } = world;
     gl.clearColor(.1, .1, .1, 1.);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindVertexArray(vao);
@@ -63,7 +63,7 @@ export const renderSystem = (world: World) => {
     gl.uniformMatrix4fv(uniforms.cam, false, camMat);
     gl.uniform2f(uniforms.pos, 0, 0);
     gl.uniform2fv(uniforms.view, viewVec);
-    gl.uniform1f(uniforms.zoom, zoom);
+    gl.uniform1f(uniforms.zoom, zoom.step(delta));
     gl.drawElements(gl.TRIANGLES, PLANE_ELEMENTS.length, gl.UNSIGNED_SHORT, 0);
 
     return world;

@@ -8,11 +8,13 @@ export const setCamSize = (mat: mat4, width: number, height: number) => {
 
 const translateVec = vec2.create();
 
+const ZOOM = 2;
+
 export const cameraSystem = (world: World) => {
     const { viewVec, zoom } = world;
     if (Pointer.pressed) {
-        const dx = Pointer.dx / zoom;
-        const dy = -Pointer.dy / zoom;
+        const dx = Pointer.dx / zoom.val;
+        const dy = -Pointer.dy / zoom.val;
         vec2.set(translateVec, dx, dy);
         vec2.add(viewVec, viewVec, translateVec);
 
@@ -20,10 +22,11 @@ export const cameraSystem = (world: World) => {
         Pointer.dy = 0;
     }
     if (Pointer.scroll) {
-        world.zoom += Pointer.scroll < 0 ?
-            1 :
+        const newZoom = zoom.val + (Pointer.scroll < 0 ?
+            ZOOM :
             // avoid completely going to zero when zooming out
-            -Math.min(1, zoom / 2);
+            -Math.min(ZOOM, zoom.val / 2));
+        zoom.setRange(zoom.val, newZoom);
 
         Pointer.scroll = 0;
     }

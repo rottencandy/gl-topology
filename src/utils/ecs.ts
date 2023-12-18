@@ -4,6 +4,7 @@ import { mat4, vec2 } from "gl-matrix";
 import { cameraSystem, setCamSize } from "../systems/camera";
 import { renderSystem, setupRenderer } from "../systems/render";
 import { timeSystem } from "../systems/time";
+import { makeTween } from "./math";
 
 const ecsWorld = createWorld({
     time: {
@@ -16,7 +17,7 @@ const ecsWorld = createWorld({
     prog: null as WebGLProgram,
     camMat: mat4.create(),
     viewVec: vec2.create(),
-    zoom: 1,
+    zoom: makeTween(1, 1, 60),
     uniforms: {
         cam: null as WebGLUniformLocation,
         pos: null as WebGLUniformLocation,
