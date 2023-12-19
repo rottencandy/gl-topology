@@ -4,6 +4,8 @@ export const clamp = (value: number, min: number, max: number) =>
 export const lerp = (from: number, to: number, weight: number) =>
     from + (to - from) * weight;
 
+export const nearest_sqrt = (n: number) => Math.round(Math.sqrt(n));
+
 export type Tween = {
     val: number;
     done: boolean;

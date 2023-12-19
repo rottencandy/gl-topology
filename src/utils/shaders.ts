@@ -19,10 +19,11 @@ export const VERTEX = `#version 300 es
 export const FRAGMENT = `#version 300 es
 precision lowp float;
 in vec2 vFragCoord;
+uniform sampler2D uTex;
 out vec4 fragColor;
 
 void main() {
-    vec2 uv = vFragCoord;
-    vec3 col = vec3(uv, 0.);
-    fragColor = vec4(col, 1.);
+    vec2 uv = 1. - vFragCoord;
+    uv.x = 1. - uv.x;
+    fragColor = texture(uTex, uv);
 }`;

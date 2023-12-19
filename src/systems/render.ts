@@ -1,5 +1,6 @@
 import { FRAGMENT, VERTEX } from "../utils/shaders";
-import { World } from "../utils/ecs";
+import { Position, renderQuery, World } from "../utils/ecs";
+import { OCP_IMG } from "../utils/images";
 
 const PLANE_VERTS = new Float32Array([
     0, 0,
@@ -24,7 +25,23 @@ export const setupRenderer = (world: World) => {
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
-    gl.bindVertexArray(null);
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    // set blue placeholder texture
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 2, 2, 0, gl.RED, gl.UNSIGNED_BYTE, new Uint16Array([0, 0, 255, 255]));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+    const img = new Image;
+    img.src = OCP_IMG;
+    img.onload = () => {
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        gl.generateMipmap(gl.TEXTURE_2D);
+    };
 
     const prog = gl.createProgram();
     const vert = gl.createShader(gl.VERTEX_SHADER);
@@ -61,10 +78,17 @@ export const renderSystem = (world: World) => {
     gl.bindVertexArray(vao);
     gl.useProgram(prog);
     gl.uniformMatrix4fv(uniforms.cam, false, camMat);
-    gl.uniform2f(uniforms.pos, 0, 0);
     gl.uniform2fv(uniforms.view, viewVec);
     gl.uniform1f(uniforms.zoom, zoom.step(delta));
-    gl.drawElements(gl.TRIANGLES, PLANE_ELEMENTS.length, gl.UNSIGNED_SHORT, 0);
+
+    const ents = renderQuery(world);
+    for (let i = 0; i < ents.length; i++) {
+        const id = ents[i];
+        const x = Position.x[id];
+        const y = Position.y[id];
+        gl.uniform2f(uniforms.pos, x, y);
+        gl.drawElements(gl.TRIANGLES, PLANE_ELEMENTS.length, gl.UNSIGNED_SHORT, 0);
+    }
 
     return world;
 };

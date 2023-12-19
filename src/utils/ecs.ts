@@ -1,10 +1,12 @@
 import { K8sResourceCommon } from "@openshift-console/dynamic-plugin-sdk";
-import { addComponent, addEntity, createWorld, defineComponent, pipe, resetWorld, Types } from "bitecs";
+import { addComponent, addEntity, createWorld, defineComponent, defineQuery, pipe, resetWorld, Types } from "bitecs";
 import { mat4, vec2 } from "gl-matrix";
 import { cameraSystem, setCamSize } from "../systems/camera";
 import { renderSystem, setupRenderer } from "../systems/render";
 import { timeSystem } from "../systems/time";
-import { makeTween } from "./math";
+import { makeTween, nearest_sqrt } from "./math";
+
+const GAP = 20;
 
 const ecsWorld = createWorld({
     time: {
@@ -51,24 +53,22 @@ export const alignCam = () => {
 };
 
 const Vec2 = { x: Types.f32, y: Types.f32 };
-const Uid = { uid: Types.ui16 };
-const Position = defineComponent(Vec2);
-const Metadata = defineComponent(Uid);
+export const Position = defineComponent(Vec2);
+export const renderQuery = defineQuery([Position]);
 const slowOjbects: { name: string, eid: number }[] = [];
 
 export const repackObjects = (res: K8sResourceCommon[]) => {
     resetWorld(ecsWorld);
     slowOjbects.splice(0, slowOjbects.length);
+    const round = nearest_sqrt(res.length);
 
     for (let i = 0; i < res.length; i++) {
         const obj = res[i];
         const eid = addEntity(ecsWorld);
         addComponent(ecsWorld, Position, eid);
-        addComponent(ecsWorld, Metadata, eid);
         // todo: check world for old positions
-        Position.x[eid] = 0;
-        Position.y[eid] = 0;
-        Metadata.uid[eid] = Number(obj.metadata.uid);
+        Position.x[eid] = (i % round) * GAP;
+        Position.y[eid] = Math.floor(i / round) * GAP;
         slowOjbects.push({ name: obj.metadata.name, eid });
     }
 };
